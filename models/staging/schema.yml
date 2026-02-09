@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: Staging table for customer dimension. One row per customer with location data.
+    columns:
+      - name: customer_id
+        description: Primary key for customers
+        tests:
+          - not_null
+          - unique
+
+      - name: customer_city
+        description: City where customer is located
+
+      - name: customer_state
+        description: Two-letter state code where customer is located
+
+  - name: stg_orders
+    description: Staging table for orders fact. One row per order with status and timestamps.
+    columns:
+      - name: order_id
+        description: Primary key for orders
+        tests:
+          - not_null
+          - unique
+
+      - name: customer_id
+        description: Foreign key to stg_customers
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
+
+      - name: order_status
+        description: Current status of the order (delivered, shipped, processing, canceled, unavailable)
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['delivered', 'shipped', 'processing', 'canceled']
+
+      - name: order_purchase_timestamp
+        description: Timestamp when order was placed by customer

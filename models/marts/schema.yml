@@ -1,0 +1,90 @@
+version: 2
+
+models:
+  - name: fct_orders
+    description: |
+      Order fact table with aggregated metrics.
+      
+      One row per order with calculated totals from order items and payments.
+      Includes customer context for analysis.
+    columns:
+      - name: order_id
+        description: Primary key - unique order identifier
+
+      - name: customer_id
+        description: Foreign key to customer dimension
+
+      - name: order_status
+        description: Current order status
+
+      - name: order_purchase_timestamp
+        description: When customer placed the order
+
+      - name: total_order_value
+        description: Sum of all item prices for this order (excludes freight)
+
+      - name: total_freight_value
+        description: Sum of all freight charges for this order
+
+      - name: total_payment_value
+        description: Total amount paid for this order
+
+  - name: fct_sales
+    description: |
+      Incremental sales fact table at order item level.
+      
+      Processes only new orders on each run using incremental strategy.
+      Use --full-refresh flag to rebuild entire table.
+    columns:
+      - name: order_item_id
+        description: Unique identifier for this order line item (surrogate key)
+
+      - name: order_id
+        description: Order this item belongs to
+
+      - name: customer_id
+        description: Customer who placed the order
+
+      - name: order_purchase_timestamp
+        description: When order was placed
+
+      - name: price
+        description: Item price (excludes freight)
+
+      - name: freight_value
+        description: Shipping cost for this item
+
+  - name: products_with_categories
+    description: |
+      Product dimension enriched with category names.
+      
+      Joins staging products with seed data to provide category descriptions.
+    columns:
+      - name: product_id
+        description: Primary key for products
+
+      - name: product_category_name
+        description: Raw category name from source system
+
+      - name: category_name
+        description: Enriched category name from seed data
+
+      - name: product_weight_g
+        description: Product weight in grams
+
+  - name: payment_filter
+    description: Filtered payment transactions based on project variable payment_methods
+    columns:
+      - name: order_id
+        description: Order identifier
+        tests:
+          - not_null
+
+      - name: payment_type
+        description: Payment method used (filtered by var payment_methods)
+        tests:
+          - accepted_values:
+              values: "{{ get_payment_methods() }}"
+
+      - name: payment_value
+        description: Payment amount in cents

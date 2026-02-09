@@ -1,0 +1,51 @@
+version: 2
+
+sources:
+  - name: olist_raw
+    description: Raw data from Brazilian ecommerce platform Olist
+    schema: RAW
+    freshness:
+      warn_after:
+        count: 12
+        period: hour
+      error_after:
+        count: 24
+        period: hour
+    tables:
+      - name: customers
+        description: Customer master data with location information
+        identifier: customers
+        loaded_at_field: customer_id
+        columns:
+          - name: customer_id
+            description: Unique customer identifier
+
+      - name: orders
+        description: Order header records with status and timestamps
+        identifier: orders
+        loaded_at_field: order_purchase_timestamp
+        columns:
+          - name: order_id
+            description: Unique order identifier
+
+      - name: order_items
+        description: Line items for each order with pricing
+        identifier: order_items
+        loaded_at_field: order_id
+        columns:
+          - name: order_id
+            description: Order this item belongs to
+
+      - name: products
+        description: Product master data with dimensions
+        identifier: products
+        columns:
+          - name: product_id
+            description: Unique product identifier
+
+      - name: payments
+        description: Payment transactions for orders
+        identifier: payments
+        columns:
+          - name: order_id
+            description: Order this payment applies to
