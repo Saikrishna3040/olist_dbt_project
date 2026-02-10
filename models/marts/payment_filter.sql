@@ -1,8 +1,4 @@
-{{ config(materialized='view',
-    pre-hook:
-      - "ALTER WAREHOUSE TRANSFORM_WH SET WAREHOUSE_SIZE = LARGE"
-    ,post-hook:
-      - "ALTER WAREHOUSE TRANSFORM_WH SET WAREHOUSE_SIZE = XSMALL"
+{{ config(materialized='view'
 ) }}
 
 SELECT
