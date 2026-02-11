@@ -38,7 +38,7 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['delivered', 'shipped', 'processing', 'canceled']
+              values: ['delivered', 'shipped', 'processing', 'canceled','unavailable','invoiced','approved','created']
 
       - name: order_purchase_timestamp
         description: Timestamp when order was placed by customer
