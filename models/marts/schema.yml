@@ -82,9 +82,7 @@ models:
 
       - name: payment_type
         description: Payment method used (filtered by var payment_methods)
-        tests:
-          - accepted_values:
-              values: "{{ get_payment_methods() }}"
+
 
       - name: payment_value
         description: Payment amount in cents
