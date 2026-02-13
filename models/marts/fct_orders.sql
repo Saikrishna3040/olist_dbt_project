@@ -1,3 +1,8 @@
+{{
+    config(materialised = 'table')
+}}
+
+
 WITH orders AS (
 
     SELECT *
